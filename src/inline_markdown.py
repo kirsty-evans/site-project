@@ -181,12 +181,15 @@ def text_to_textnodes(text):
 
 # TESTING
 
+'''
+
 example_input = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
 
 nodes = text_to_textnodes(example_input)
 for node in nodes:
     print(node)
 
+    '''
 '''
 output should be:
 [
@@ -203,4 +206,15 @@ output should be:
 ]
 
 '''
+
+def markdown_to_blocks(markdown):
+    '''
+    Takes a raw Markdown string (representing a full document) as input and returns a list of block strings.
+    '''
+    blocks = markdown.split("\n\n")
+    for block in blocks:
+        block = block.strip()
+        if block == "":
+            blocks.remove(block)
+    return blocks
 
