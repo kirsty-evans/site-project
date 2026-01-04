@@ -2,7 +2,7 @@
 
 import re
 
-from textnode import TextNode, TextType, text_node_to_html_node
+from textnode import TextNode, TextType
 
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
@@ -132,14 +132,6 @@ def split_nodes_link(old_nodes):
                 current_text = after
 
     return new_nodes
-        
-
-
-
-
-    
-            
-
 
 # TESTING
 '''
@@ -171,3 +163,44 @@ new_nodes = split_nodes_image([node])
 print(new_nodes)
 
 '''
+
+def text_to_textnodes(text):
+    '''
+    Converts raw string of markdown-flavoured text into a list of TextNode objects
+    '''
+    node = TextNode(text, TextType.TEXT)
+    new_nodes = [node]
+    new_nodes = split_nodes_delimiter(new_nodes, "**", TextType.BOLD)
+    new_nodes = split_nodes_delimiter(new_nodes, "_", TextType.ITALIC)
+    new_nodes = split_nodes_delimiter(new_nodes, "`", TextType.CODE)
+    new_nodes = split_nodes_image(new_nodes)
+    new_nodes = split_nodes_link(new_nodes)
+    return new_nodes
+
+
+
+# TESTING
+
+example_input = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+
+nodes = text_to_textnodes(example_input)
+for node in nodes:
+    print(node)
+
+'''
+output should be:
+[
+    TextNode("This is ", TextType.TEXT),
+    TextNode("text", TextType.BOLD),
+    TextNode(" with an ", TextType.TEXT),
+    TextNode("italic", TextType.ITALIC),
+    TextNode(" word and a ", TextType.TEXT),
+    TextNode("code block", TextType.CODE),
+    TextNode(" and an ", TextType.TEXT),
+    TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+    TextNode(" and a ", TextType.TEXT),
+    TextNode("link", TextType.LINK, "https://boot.dev"),
+]
+
+'''
+
