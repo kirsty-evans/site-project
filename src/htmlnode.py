@@ -34,3 +34,4 @@ class LeafNode(HTMLNode):
     
     def __repr__(self):
         return f"LeafNode({self.tag}, {self.value}, {self.props})"
+    
