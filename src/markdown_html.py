@@ -21,6 +21,25 @@ def text_to_children(text):
             children.append(LeafNode("i", text_node.text))
         elif text_node.text_type == TextType.CODE:
             children.append(LeafNode("code", text_node.text))
+        elif text_node.text_type == TextType.LINK:
+            children.append(
+                LeafNode(
+                    "a",
+                    text_node.text,
+                    {"href": text_node.url},   # or whatever attribute name you used
+                )
+            )
+        elif text_node.text_type == TextType.IMAGE:
+            children.append(
+                LeafNode(
+                    "img",
+                    "",                         # no inner text for <img>
+                    {
+                        "src": text_node.url,
+                        "alt": text_node.text,
+                    },
+                )
+            )
     return children
 
 def markdown_to_html_node(markdown):
@@ -71,6 +90,9 @@ def markdown_to_html_node(markdown):
             node_list.append(outer)
             continue  # Code blocks do not have inline children
         if block_type == BlockType.QUOTE:
+            split_block = block.split("\n")
+            stripped_lines = [line.lstrip("> ").rstrip() for line in split_block]
+            block = "\n".join(stripped_lines)
             children = text_to_children(block)
             node = ParentNode("blockquote", children)
             node_list.append(node)
@@ -111,28 +133,7 @@ def markdown_to_html_node(markdown):
             continue
     parent_node = ParentNode(tag="div", children=node_list)
     return parent_node
-    
 
-        
-    '''
-    for block in blocks:
-        block_type = block_to_block_type(block)
-        if block_type == BlockType.HEADING:
-            node = HTMLNode(tag="h1")
-        if block_type == BlockType.PARAGRAPH:
-            node = HTMLNode(tag="p")
-        if block_type == BlockType.CODE:
-            node = HTMLNode(tag="pre")
-        if block_type == BlockType.QUOTE:
-            node = HTMLNode(tag="blockquote")
-        if block_type == BlockType.UNORDERED_LIST:
-            node = HTMLNode(tag="ul")
-        if block_type == BlockType.ORDERED_LIST:
-            node = HTMLNode(tag="ol")
-
-    '''
-
-    return blocks
         
 
 mk = """

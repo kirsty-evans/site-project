@@ -2,6 +2,7 @@ from enum import Enum
 from textnode import *
 import os
 import shutil
+from generate_page import generate_page
 
 path_public = "public"
 path_static = "static"
@@ -27,10 +28,8 @@ def copy_static_to_public(path_public, path_static, is_root = True):
 
 
 
-
-
-
 def main():
     copy_static_to_public(path_public, path_static)
+    generate_page("content/index.md", "template.html", "public/index.html")
     
 main()
